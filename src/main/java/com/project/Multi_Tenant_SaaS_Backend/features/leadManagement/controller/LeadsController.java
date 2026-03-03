@@ -7,6 +7,7 @@ import com.project.Multi_Tenant_SaaS_Backend.features.leadManagement.service.Lea
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("${api.base.path}/leads")
 @RequiredArgsConstructor
+@Tag(name = "Leads Management")
 public class LeadsController {
 
     private final LeadManagementService leadService;

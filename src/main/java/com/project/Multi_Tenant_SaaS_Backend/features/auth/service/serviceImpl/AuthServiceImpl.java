@@ -7,7 +7,7 @@ import com.project.Multi_Tenant_SaaS_Backend.data.repositories.RefreshTokenRepos
 import com.project.Multi_Tenant_SaaS_Backend.data.repositories.UserRepository;
 import com.project.Multi_Tenant_SaaS_Backend.features.auth.dto.request.LoginRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.auth.dto.response.LoginResponse;
-import com.project.Multi_Tenant_SaaS_Backend.features.auth.mapper.UserMapper;
+import com.project.Multi_Tenant_SaaS_Backend.features.auth.mapper.AuthMapper;
 import com.project.Multi_Tenant_SaaS_Backend.features.auth.service.AuthService;
 import com.project.Multi_Tenant_SaaS_Backend.security.JWT.JWTUtil;
 import com.project.Multi_Tenant_SaaS_Backend.security.JWT.UserPrincipal;
@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
         cookieConfig.addSecureCookie(httpResponse, "refreshToken",
                 rawRefreshToken, (int) (jwtUtil.REFRESH_TOKEN_VALID_TIME_MILLIS() / 1000), "/");
 
-        LoginResponse loginResponse = UserMapper.mapUserToLogInResponse(user);
+        LoginResponse loginResponse = AuthMapper.mapUserToLogInResponse(user);
 
         return ApiResponse.builder()
                 .success(1).code(200)

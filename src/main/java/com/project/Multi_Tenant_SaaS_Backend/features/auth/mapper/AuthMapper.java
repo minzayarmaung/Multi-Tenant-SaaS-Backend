@@ -3,7 +3,7 @@ package com.project.Multi_Tenant_SaaS_Backend.features.auth.mapper;
 import com.project.Multi_Tenant_SaaS_Backend.data.models.User;
 import com.project.Multi_Tenant_SaaS_Backend.features.auth.dto.response.LoginResponse;
 
-public class UserMapper {
+public class AuthMapper {
 
     public static LoginResponse mapUserToLogInResponse(User user) {
 
