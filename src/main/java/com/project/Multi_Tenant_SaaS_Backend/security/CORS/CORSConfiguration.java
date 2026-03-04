@@ -15,7 +15,7 @@ public class CORSConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://user-management-system-adminpro.vercel.app")); // React frontend / Vercel
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://multi-tenant-frontend-snowy.vercel.app/")); // React frontend / Vercel
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
