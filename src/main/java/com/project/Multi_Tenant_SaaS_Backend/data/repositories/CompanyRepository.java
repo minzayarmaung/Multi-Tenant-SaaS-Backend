@@ -29,5 +29,5 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
 
     Page<Company> findAllByStatus(Status status, Pageable pageable);
 
-
+    long countByStatus(Status status);
 }

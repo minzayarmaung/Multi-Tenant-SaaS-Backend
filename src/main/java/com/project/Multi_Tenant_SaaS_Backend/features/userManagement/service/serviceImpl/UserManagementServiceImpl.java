@@ -12,9 +12,9 @@ import com.project.Multi_Tenant_SaaS_Backend.data.models.Company;
 import com.project.Multi_Tenant_SaaS_Backend.data.models.User;
 import com.project.Multi_Tenant_SaaS_Backend.data.repositories.CompanyRepository;
 import com.project.Multi_Tenant_SaaS_Backend.data.repositories.UserRepository;
-import com.project.Multi_Tenant_SaaS_Backend.features.auth.mapper.AuthMapper;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.request.CreateCompanyAdminRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.request.CreateMemberRequest;
+import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.request.UpdateUserRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.response.UserResponse;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.mapper.UserMapper;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.service.UserManagementService;
@@ -30,8 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Set;
-
-import static com.project.Multi_Tenant_SaaS_Backend.common.response.utils.ResponseUtils.buildPaginatedResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -125,6 +123,98 @@ public class UserManagementServiceImpl implements UserManagementService {
                 .data(UserMapper.mapToResponse(saved))
                 .meta(Map.of("timestamp", System.currentTimeMillis()))
                 .build();
+    }
+
+    // ─────────────────────────────────────────────
+    // COMPANY_ADMIN — List users in own company
+    // ─────────────────────────────────────────────
+    @Override
+    public PaginatedApiResponse<UserResponse> getCompanyUsers(PaginationRequest request,
+                                                              UserPrincipal principal) {
+        Pageable pageable = buildPageable(request);
+
+        Page<User> page = userRepository.searchUsersByCompany(
+                request.getKeyword(), principal.getCompanyId(), Status.ACTIVE, pageable);
+
+        return buildPaginatedResponse(page, request);
+    }
+
+    // ─────────────────────────────────────────────
+    // GET by ID
+    // ─────────────────────────────────────────────
+    @Override
+    public ApiResponse getUserById(Long id, UserPrincipal principal) {
+
+        User user = resolveUser(id, principal);
+
+        return ApiResponse.builder()
+                .success(1).code(200)
+                .message("User fetched successfully.")
+                .data(UserMapper.mapToResponse(user))
+                .meta(Map.of("timestamp", System.currentTimeMillis()))
+                .build();
+    }
+
+    // ─────────────────────────────────────────────
+    // UPDATE BOTH COMPANY_ADMIN AND SYSTEM_USER
+    // ─────────────────────────────────────────────
+    @Override
+    @Transactional
+    public ApiResponse updateUser(Long id, UpdateUserRequest request, UserPrincipal principal) {
+
+        User user = resolveUser(id, principal);
+
+        // Check email uniqueness — exclude self
+        if (request.email() != null && !request.email().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.email())) {
+                throw new DuplicateEntityException("Email already in use: " + request.email());
+            }
+            user.setEmail(request.email());
+        }
+
+        // Only update password if provided
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        User updated = userRepository.save(user);
+
+        return ApiResponse.builder()
+                .success(1).code(200)
+                .message("User updated successfully.")
+                .data(UserMapper.mapToResponse(updated))
+                .meta(Map.of("timestamp", System.currentTimeMillis()))
+                .build();
+    }
+
+    // ─────────────────────────────────────────────
+    // SOFT DELETE COMPANY_ADMIN AND SYSTEM_USER
+    // ─────────────────────────────────────────────
+    @Override
+    @Transactional
+    public ApiResponse deleteUser(Long id, UserPrincipal principal) {
+
+        User user = resolveUser(id, principal);
+        user.setStatus(Status.INACTIVE);
+        userRepository.save(user);
+
+        return ApiResponse.builder()
+                .success(1).code(200)
+                .message("User deleted successfully.")
+                .meta(Map.of("timestamp", System.currentTimeMillis()))
+                .build();
+    }
+
+    private User resolveUser(Long id, UserPrincipal principal) {
+        if (principal.getRole() == Role.SYSTEM_ADMIN) {
+            return userRepository.findById(id)
+                    .filter(u -> u.getStatus() == Status.ACTIVE)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found: " + id));
+        }
+        // COMPANY_ADMIN — scoped to own company
+        return userRepository.findByIdAndCompanyId(id, principal.getCompanyId())
+                .filter(u -> u.getStatus() == Status.ACTIVE)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + id));
     }
 
     private Pageable buildPageable(PaginationRequest request) {

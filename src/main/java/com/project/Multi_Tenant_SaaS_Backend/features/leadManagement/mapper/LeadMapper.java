@@ -11,8 +11,15 @@ public class LeadMapper {
                 .name(lead.getName())
                 .email(lead.getEmail())
                 .phone(lead.getPhone())
-                .status(lead.getStatus() != null ? lead.getStatus().name() : null)
-                .assignedToUserId(lead.getAssignedTo() != null ? lead.getAssignedTo().getId() : null)
+                .leadStatus(lead.getLeadStatus().name())
+                .companyId(lead.getCompany().getId())
+                .companyName(lead.getCompany().getName())
+                .assignedToId(lead.getAssignedTo() != null
+                        ? lead.getAssignedTo().getId() : null)
+                .assignedToEmail(lead.getAssignedTo() != null
+                        ? lead.getAssignedTo().getEmail() : null)
+                .createdAt(lead.getCreatedAt())
+                .updatedAt(lead.getUpdatedAt())
                 .build();
     }
 }

@@ -43,4 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     // Scoped fetch — COMPANY_ADMIN use
     Optional<User> findByIdAndCompanyId(Long id, Long companyId);
+
+    long countByCompanyIdAndStatus(Long companyId, Status status);
+    long countByStatus(Status status);
 }

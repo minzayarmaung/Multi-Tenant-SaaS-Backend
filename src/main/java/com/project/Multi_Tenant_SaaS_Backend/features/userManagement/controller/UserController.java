@@ -7,6 +7,7 @@ import com.project.Multi_Tenant_SaaS_Backend.common.response.utils.ResponseUtils
 import com.project.Multi_Tenant_SaaS_Backend.features.companyManagement.dto.request.CompanyCreateRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.request.CreateCompanyAdminRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.request.CreateMemberRequest;
+import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.request.UpdateUserRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.dto.response.UserResponse;
 import com.project.Multi_Tenant_SaaS_Backend.features.userManagement.service.UserManagementService;
 import com.project.Multi_Tenant_SaaS_Backend.security.JWT.UserPrincipal;
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @Operation(summary = "Create Company Members")
-    @PreAuthorize("hasAnyAuthority('ROLE_COMPANY_ADMIN', 'ROLE_SYSTEM_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_COMPANY_ADMIN'")
     @PostMapping("/members")
     public ResponseEntity<ApiResponse> createMember(
             @RequestBody CreateMemberRequest request,
@@ -67,4 +68,62 @@ public class UserController {
         final PaginatedApiResponse response = this.userService.getAllUsers(request);
         return ResponseUtils.buildPaginatedResponse(httpRequest, response);
     }
+
+    @Operation(summary = "Get All Company Users (Paginated)")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY_ADMIN')")
+    @GetMapping("/company")
+    public ResponseEntity<PaginatedApiResponse<UserResponse>> getCompanyUsers(
+            @ModelAttribute PaginationRequest request,
+            HttpServletRequest httpRequest) {
+
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+
+        final PaginatedApiResponse response = this.userService.getCompanyUsers(request, principal);
+        return ResponseUtils.buildPaginatedResponse(httpRequest, response);
+    }
+
+    @Operation(summary = "Get User By Id")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMIN', 'ROLE_COMPANY_ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getUserById(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest) {
+
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+
+        final ApiResponse response = this.userService.getUserById(id, principal);
+        return ResponseUtils.buildResponse(httpRequest, response);
+    }
+
+    @Operation(summary = "Update User")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMIN', 'ROLE_COMPANY_ADMIN')")
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateUser(
+            @PathVariable Long id,
+            @RequestBody UpdateUserRequest request,
+            HttpServletRequest httpRequest) {
+
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+
+        final ApiResponse response = this.userService.updateUser(id, request, principal);
+        return ResponseUtils.buildResponse(httpRequest, response);
+    }
+
+    @Operation(summary = "Delete User by Id")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMIN', 'ROLE_COMPANY_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteUser(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest) {
+
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+
+        final ApiResponse response = this.userService.deleteUser(id, principal);
+        return ResponseUtils.buildResponse(httpRequest, response);
+    }
+
 }
