@@ -18,11 +18,11 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
     boolean existsByEmail(String email);
 
     @Query("""
-        SELECT c FROM Company c
-        WHERE c.status = :status
-        AND (:keyword IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-             OR LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        """)
+    SELECT c FROM Company c
+    WHERE c.status = :status
+    AND LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    OR LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
     Page<Company> searchCompanies(@Param("keyword") String keyword,
                                   @Param("status") Status status,
                                   Pageable pageable);

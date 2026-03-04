@@ -86,8 +86,10 @@ public class LeadManagementServiceImpl implements LeadManagementService {
                                                               UserPrincipal principal) {
         Pageable pageable = buildPageable(request);
 
+        String keyword = request.getKeyword() != null ? request.getKeyword() : "";
+
         Page<Lead> page = leadRepository.searchByCompany(
-                request.getKeyword(),
+                keyword,
                 principal.getCompanyId(),
                 Status.ACTIVE,
                 pageable
@@ -104,8 +106,10 @@ public class LeadManagementServiceImpl implements LeadManagementService {
                                                          UserPrincipal principal) {
         Pageable pageable = buildPageable(request);
 
+        String keyword = request.getKeyword() != null ? request.getKeyword() : "";
+
         Page<Lead> page = leadRepository.searchAssignedToUser(
-                request.getKeyword(),
+                keyword,
                 principal.getCompanyId(),
                 principal.getUserId(),
                 Status.ACTIVE,

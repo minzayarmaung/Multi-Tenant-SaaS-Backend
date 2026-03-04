@@ -74,8 +74,10 @@ public class CompanyServiceImpl implements CompanyService {
                 sort
         );
 
-        Page<Company> page = (paginationRequest.getKeyword() != null && !paginationRequest.getKeyword().isBlank())
-                ? companyRepository.searchCompanies(paginationRequest.getKeyword(), Status.ACTIVE, pageable)
+        String keyword = paginationRequest.getKeyword() != null ? paginationRequest.getKeyword() : "";
+
+        Page<Company> page = (keyword != null && !keyword.isBlank())
+                ? companyRepository.searchCompanies(keyword, Status.ACTIVE, pageable)
                 : companyRepository.findAllByStatus(Status.ACTIVE, pageable);
 
         List<CompanyResponse> data = page.getContent()

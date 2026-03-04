@@ -20,11 +20,11 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     // SYSTEM_ADMIN — all users paginated
     @Query("""
-        SELECT u FROM User u
-        LEFT JOIN FETCH u.company c
-        WHERE u.status = :status
-        AND (:keyword IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        """)
+    SELECT u FROM User u
+    LEFT JOIN FETCH u.company c
+    WHERE u.status = :status
+    AND LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
     Page<User> searchAllUsers(@Param("keyword") String keyword,
                               @Param("status") Status status,
                               Pageable pageable);

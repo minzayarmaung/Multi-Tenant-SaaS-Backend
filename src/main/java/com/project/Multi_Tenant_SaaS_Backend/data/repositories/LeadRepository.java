@@ -19,14 +19,12 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     // COMPANY_ADMIN — all leads in own company
     @Query("""
-        SELECT l FROM Lead l
-        LEFT JOIN FETCH l.assignedTo
-        WHERE l.company.id = :companyId
-        AND l.status = :status
-        AND (:keyword IS NULL
-             OR LOWER(l.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-             OR LOWER(l.email) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        """)
+    SELECT l FROM Lead l
+    LEFT JOIN FETCH l.assignedTo
+    WHERE l.company.id = :companyId
+    AND l.status = :status
+    AND LOWER(l.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
     Page<Lead> searchByCompany(@Param("keyword") String keyword,
                                @Param("companyId") Long companyId,
                                @Param("status") Status status,
