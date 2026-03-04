@@ -135,8 +135,10 @@ public class UserManagementServiceImpl implements UserManagementService {
                                                               UserPrincipal principal) {
         Pageable pageable = buildPageable(request);
 
+        String keyword = request.getKeyword() != null ? request.getKeyword() : "";
+
         Page<User> page = userRepository.searchUsersByCompany(
-                request.getKeyword(), principal.getCompanyId(), Status.ACTIVE, pageable);
+                keyword, principal.getCompanyId(), Status.ACTIVE, pageable);
 
         return buildPaginatedResponse(page, request);
     }

@@ -31,11 +31,11 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     // COMPANY_ADMIN — own company only
     @Query("""
-        SELECT u FROM User u
-        WHERE u.status = :status
-        AND u.company.id = :companyId
-        AND (:keyword IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        """)
+    SELECT u FROM User u
+    WHERE u.status = :status
+    AND u.company.id = :companyId
+    AND LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
     Page<User> searchUsersByCompany(@Param("keyword") String keyword,
                                     @Param("companyId") Long companyId,
                                     @Param("status") Status status,

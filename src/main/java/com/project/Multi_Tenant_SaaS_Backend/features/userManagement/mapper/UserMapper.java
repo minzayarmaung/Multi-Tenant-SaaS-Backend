@@ -7,6 +7,7 @@ public class UserMapper {
     public static UserResponse mapToResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
+                .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .status(user.getStatus().name())
