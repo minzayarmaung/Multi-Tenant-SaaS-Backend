@@ -131,4 +131,17 @@ public class LeadsController {
         return ResponseUtils.buildResponse(httpRequest, response);
     }
 
+    @Operation(summary = "Delete Lead")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteLead(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest) {
+
+        UserPrincipal principal = getPrincipal();
+
+        final ApiResponse response = this.leadService.deleteLead(id, principal);
+        return ResponseUtils.buildResponse(httpRequest, response);
+    }
+
 }

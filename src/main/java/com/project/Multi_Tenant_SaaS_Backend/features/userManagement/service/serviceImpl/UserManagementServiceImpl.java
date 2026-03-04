@@ -168,6 +168,10 @@ public class UserManagementServiceImpl implements UserManagementService {
 
         User user = resolveUser(id, principal);
 
+        if (request.name() != null) {
+            user.setName(request.name());
+        }
+
         // Check email uniqueness — exclude self
         if (request.email() != null && !request.email().equals(user.getEmail())) {
             if (userRepository.existsByEmail(request.email())) {

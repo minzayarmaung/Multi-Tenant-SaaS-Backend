@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @Operation(summary = "Create Company Members")
-    @PreAuthorize("hasAnyAuthority('ROLE_COMPANY_ADMIN'")
+    @PreAuthorize("hasAnyAuthority('ROLE_COMPANY_ADMIN')")
     @PostMapping("/members")
     public ResponseEntity<ApiResponse> createMember(
             @RequestBody CreateMemberRequest request,

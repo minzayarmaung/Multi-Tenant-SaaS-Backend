@@ -223,6 +223,23 @@ public class LeadManagementServiceImpl implements LeadManagementService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public ApiResponse deleteLead(Long id, UserPrincipal principal) {
+        Lead lead = leadRepository.findByIdAndCompanyId(id, principal.getCompanyId())
+                .filter(l -> l.getStatus() == Status.ACTIVE)
+                .orElseThrow(() -> new ResourceNotFoundException("Lead not found: " + id));
+
+        lead.setStatus(Status.INACTIVE);
+        leadRepository.save(lead);
+
+        return ApiResponse.builder()
+                .success(1).code(200)
+                .message("Lead deleted successfully.")
+                .meta(Map.of("timestamp", System.currentTimeMillis()))
+                .build();
+    }
+
     // ─────────────────────────────────────────────
     // Private helpers
     // ─────────────────────────────────────────────

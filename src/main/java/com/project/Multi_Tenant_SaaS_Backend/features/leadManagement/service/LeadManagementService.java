@@ -23,4 +23,6 @@ public interface LeadManagementService {
     ApiResponse updateLeadStatus(Long id, UpdateLeadStatusRequest request, UserPrincipal principal);
 
     ApiResponse assignLead(Long id, AssignLeadRequest request, UserPrincipal principal);
+
+    ApiResponse deleteLead(Long id, UserPrincipal principal);
 }
