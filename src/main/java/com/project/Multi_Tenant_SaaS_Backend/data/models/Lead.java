@@ -26,6 +26,8 @@ public class Lead extends Auditable {
 
     private String phone;
 
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LeadStatus leadStatus;

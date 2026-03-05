@@ -11,6 +11,7 @@ public class LeadMapper {
                 .name(lead.getName())
                 .email(lead.getEmail())
                 .phone(lead.getPhone())
+                .description(lead.getDescription())
                 .leadStatus(lead.getLeadStatus().name())
                 .companyId(lead.getCompany().getId())
                 .companyName(lead.getCompany().getName())

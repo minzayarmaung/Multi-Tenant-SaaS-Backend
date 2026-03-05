@@ -64,6 +64,7 @@ public class LeadManagementServiceImpl implements LeadManagementService {
         lead.setName(request.name());
         lead.setEmail(request.email());
         lead.setPhone(request.phone());
+        lead.setDescription(request.description());
         lead.setLeadStatus(LeadStatus.NEW);
         lead.setCompany(company);
         lead.setStatus(Status.ACTIVE);
@@ -153,6 +154,10 @@ public class LeadManagementServiceImpl implements LeadManagementService {
 
         if (request.phone() != null) {
             lead.setPhone(request.phone());
+        }
+
+        if(request.description() != null){
+            lead.setDescription(request.description());
         }
 
         if (request.email() != null && !request.email().equals(lead.getEmail())) {

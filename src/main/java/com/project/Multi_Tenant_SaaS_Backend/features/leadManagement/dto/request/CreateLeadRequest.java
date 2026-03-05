@@ -3,5 +3,6 @@ package com.project.Multi_Tenant_SaaS_Backend.features.leadManagement.dto.reques
 public record CreateLeadRequest(
         String name,
         String email,
-        String phone
+        String phone,
+        String description
 ) {}

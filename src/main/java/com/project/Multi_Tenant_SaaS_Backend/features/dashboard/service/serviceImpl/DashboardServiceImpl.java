@@ -66,7 +66,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .totalUsers(userRepository.countByCompanyIdAndStatus(companyId, Status.ACTIVE))
                 .totalLeads(leadRepository.countByCompanyIdAndStatus(companyId, Status.ACTIVE))
                 .assignedLeads(leadRepository.countByCompanyIdAndAssignedToIsNotNull(companyId))
-                .unassignedLeads(leadRepository.countByCompanyIdAndAssignedToIsNull(companyId))
+                .unassignedLeads(leadRepository.countByCompanyIdAndAssignedToIsNullAndStatus(companyId , Status.ACTIVE))
                 .leadStatusBreakdown(aggregateLeadStatusByCompany(companyId))
                 .build();
 

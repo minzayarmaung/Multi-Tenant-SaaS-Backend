@@ -84,7 +84,7 @@ public class LeadsController {
         return ResponseUtils.buildResponse(httpRequest,response );
     }
 
-    @Operation(summary = "Update Lead User By ID")
+    @Operation(summary = "Update Lead By ID")
     @PreAuthorize("hasAuthority('ROLE_COMPANY_ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse> updateLead(

@@ -10,6 +10,7 @@ public record LeadResponse(
         String name,
         String email,
         String phone,
+        String description,
         String leadStatus,
         Long companyId,
         String companyName,
