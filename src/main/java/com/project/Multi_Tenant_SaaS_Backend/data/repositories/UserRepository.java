@@ -51,5 +51,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     @Modifying
     @Query("UPDATE User u SET u.status = 4 WHERE u.company.id = :companyId")
-    void deactivateUsersByCompanyId(Long id);
+    void deactivateUsersByCompanyId(Long companyId);
 }
