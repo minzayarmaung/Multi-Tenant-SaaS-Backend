@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,4 +48,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     long countByCompanyIdAndStatus(Long companyId, Status status);
     long countByStatus(Status status);
+
+    @Modifying
+    @Query("UPDATE User u SET u.status = 4 WHERE u.company.id = :companyId")
+    void deactivateUsersByCompanyId(Long id);
 }

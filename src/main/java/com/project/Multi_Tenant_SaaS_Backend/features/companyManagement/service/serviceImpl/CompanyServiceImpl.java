@@ -8,7 +8,9 @@ import com.project.Multi_Tenant_SaaS_Backend.common.response.dto.PaginatedApiRes
 import com.project.Multi_Tenant_SaaS_Backend.common.response.dto.PaginationMeta;
 import com.project.Multi_Tenant_SaaS_Backend.data.enums.Status;
 import com.project.Multi_Tenant_SaaS_Backend.data.models.Company;
+import com.project.Multi_Tenant_SaaS_Backend.data.models.User;
 import com.project.Multi_Tenant_SaaS_Backend.data.repositories.CompanyRepository;
+import com.project.Multi_Tenant_SaaS_Backend.data.repositories.UserRepository;
 import com.project.Multi_Tenant_SaaS_Backend.features.companyManagement.dto.request.CompanyCreateRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.companyManagement.dto.request.CompanyUpdateRequest;
 import com.project.Multi_Tenant_SaaS_Backend.features.companyManagement.dto.response.CompanyResponse;
@@ -31,6 +33,7 @@ import java.util.Map;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ApiResponse createCompany(CompanyCreateRequest request) {
@@ -163,6 +166,8 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(id)
                 .filter(c -> c.getStatus() == Status.ACTIVE)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
+
+        userRepository.deactivateUsersByCompanyId(id);
 
         company.setStatus(Status.INACTIVE);
         companyRepository.save(company);
