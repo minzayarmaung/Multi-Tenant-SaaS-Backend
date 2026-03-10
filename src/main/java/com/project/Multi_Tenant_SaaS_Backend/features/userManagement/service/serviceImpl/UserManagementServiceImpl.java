@@ -202,6 +202,14 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public ApiResponse deleteUser(Long id, UserPrincipal principal) {
 
+        if (principal.getUserId().equals(id)) {
+            return ApiResponse.builder()
+                    .success(0).code(400)
+                    .message("You cannot delete your own account.")
+                    .meta(Map.of("timestamp", System.currentTimeMillis()))
+                    .build();
+        }
+
         User user = resolveUser(id, principal);
         user.setStatus(Status.INACTIVE);
         userRepository.save(user);

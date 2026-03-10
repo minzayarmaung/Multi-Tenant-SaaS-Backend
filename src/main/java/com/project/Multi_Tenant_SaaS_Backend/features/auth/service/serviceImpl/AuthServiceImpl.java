@@ -1,6 +1,7 @@
 package com.project.Multi_Tenant_SaaS_Backend.features.auth.service.serviceImpl;
 
 import com.project.Multi_Tenant_SaaS_Backend.common.response.dto.ApiResponse;
+import com.project.Multi_Tenant_SaaS_Backend.data.enums.Status;
 import com.project.Multi_Tenant_SaaS_Backend.data.models.RefreshToken;
 import com.project.Multi_Tenant_SaaS_Backend.data.models.User;
 import com.project.Multi_Tenant_SaaS_Backend.data.repositories.RefreshTokenRepository;
@@ -56,6 +57,14 @@ public class AuthServiceImpl implements AuthService {
 
         User user = optionalUser.get();
 
+        if (user.getStatus() == Status.INACTIVE) {
+            return ApiResponse.builder()
+                    .success(0).code(403)
+                    .message("Your account has been banned. Please contact the System Admin.")
+                    .meta(Map.of("timestamp", System.currentTimeMillis()))
+                    .build();
+        }
+
         try {
             authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
@@ -68,6 +77,7 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 
+        // Could NULL becoz of System_Admin
         Long companyId = user.getCompany() != null ? user.getCompany().getId() : null;
 
         String accessToken = jwtUtil.generateAccessToken(
@@ -119,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 
-        // 2. Validate JWT signature + expiry
+        // Validate JWT signature + expiry
         Claims claims;
         try {
             claims = jwtUtil.extractAllClaims(rawToken);
